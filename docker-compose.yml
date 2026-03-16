@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   db:
-    container_name: assessment-postgres
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: myuser
@@ -14,10 +13,7 @@ services:
       - "5432:5432"
 
   api:
-    container_name: assessment-api
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     volumes:
       - .:/app
       - course_data:/app/interactive_courses_data
@@ -25,66 +21,17 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - kafka
-    environment:
-		- PYTHONPATH=/app/src
-		- GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
-		- GOOGLE_LOCATION=${GOOGLE_LOCATION}
-		- GENAI_MODEL_NAME=${GENAI_MODEL_NAME}
-		- GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
-		- KARMAYOGI_API_KEY=${KARMAYOGI_API_KEY}
-		- DISABLE_AUTH_VERIFICATION=${DISABLE_AUTH_VERIFICATION:-false}
-		- MAX_CONCURRENCY=50
-		- LOG_LEVEL=INFO
-		- WORKER_BATCH_SIZE=50
-		- MAX_ATTEMPTS=3
-		- COURSES_BASE_PATH=/home/aswin/work_local/assessment_generation_1/test_data/new_scoring_data
-		- SCORM_FLAG=false
-		- SSO_URL=https://sso.example.com/auth
-		- SSO_REALM=sunbird-rc
-		- ACCESS_TOKEN_PUBLICKEY_BASEPATH=/home/aswin/work_local/assment_generation_2/keys
-		- CLEANUP_RETENTION_DAYS=7
-		- CLEANUP_SCHEDULE_HOUR=3
-		- CLEANUP_SCHEDULE_MINUTE=0
-    command: uvicorn assessment.api:app --host 0.0.0.0 --port 8000
-    restart: unless-stopped
-    
-  worker:
-    container_name: assessment-worker
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-      - course_data:/app/interactive_courses_data
-    depends_on:
-      - db
-      - kafka
     environment:
       - PYTHONPATH=/app/src
+      - DB_DSN=postgresql://myuser:mypassword@db:5432/karmayogi_db
       - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
       - GOOGLE_LOCATION=${GOOGLE_LOCATION}
       - GENAI_MODEL_NAME=${GENAI_MODEL_NAME}
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
       - KARMAYOGI_API_KEY=${KARMAYOGI_API_KEY}
-      - DISABLE_AUTH_VERIFICATION=${DISABLE_AUTH_VERIFICATION:-false}
-      - LOG_LEVEL=INFO
-      - MAX_CONCURRENCY=50
-      - WORKER_BATCH_SIZE=50
-      - MAX_ATTEMPTS=3
-      - COURSES_BASE_PATH=/home/aswin/work_local/assessment_generation_1/test_data/new_scoring_data
-      - SCORM_FLAG=false
-      - SSO_URL=https://sso.example.com/auth
-      - SSO_REALM=sunbird-rc
-      - ACCESS_TOKEN_PUBLICKEY_BASEPATH=/home/aswin/work_local/assment_generation_2/keys
-      - CLEANUP_RETENTION_DAYS=7
-      - CLEANUP_SCHEDULE_HOUR=3
-      - CLEANUP_SCHEDULE_MINUTE=0
-    command: python -m assessment.worker_service
-    restart: unless-stopped
+    command: uvicorn assessment.api:app --host 0.0.0.0 --port 8000
 
   ui:
-    container_name: assessment-ui
     build:
       context: .
       dockerfile: ui/Dockerfile
@@ -94,30 +41,6 @@ services:
       - "8501:8501"
     depends_on:
       - api
-    restart: unless-stopped
-
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "22181:2181"
-
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    depends_on:
-      - zookeeper
-    ports:
-      - "29092:29092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
 volumes:
   postgres_data:
