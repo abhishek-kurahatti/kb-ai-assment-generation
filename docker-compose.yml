@@ -28,16 +28,12 @@ services:
       - kafka
     environment:
       - PYTHONPATH=/app/src
-#      - DB_DSN=postgresql://myuser:mypassword@db:5432/karmayogi_db
       - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
       - GOOGLE_LOCATION=${GOOGLE_LOCATION}
       - GENAI_MODEL_NAME=${GENAI_MODEL_NAME}
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
       - KARMAYOGI_API_KEY=${KARMAYOGI_API_KEY}
-#      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-#      - KAFKA_TOPIC=assessment.lifecycle.events
       - DISABLE_AUTH_VERIFICATION=${DISABLE_AUTH_VERIFICATION:-false}
-#      - KAFKA_REQUEST_TOPIC=assessment.request
 	  - MAX_CONCURRENCY=50
 	  - LOG_LEVEL=INFO
       - WORKER_BATCH_SIZE=50
@@ -66,15 +62,11 @@ services:
       - kafka
     environment:
       - PYTHONPATH=/app/src
-#      - DB_DSN=postgresql://myuser:mypassword@db:5432/karmayogi_db
       - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
       - GOOGLE_LOCATION=${GOOGLE_LOCATION}
       - GENAI_MODEL_NAME=${GENAI_MODEL_NAME}
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
       - KARMAYOGI_API_KEY=${KARMAYOGI_API_KEY}
-#      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-#      - KAFKA_TOPIC=assessment.lifecycle.events
-#      - KAFKA_REQUEST_TOPIC=assessment.request
       - DISABLE_AUTH_VERIFICATION=${DISABLE_AUTH_VERIFICATION:-false}
       - LOG_LEVEL=INFO
       - MAX_CONCURRENCY=50
