@@ -27,25 +27,25 @@ services:
       - db
       - kafka
     environment:
-      - PYTHONPATH=/app/src
-      - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
-      - GOOGLE_LOCATION=${GOOGLE_LOCATION}
-      - GENAI_MODEL_NAME=${GENAI_MODEL_NAME}
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
-      - KARMAYOGI_API_KEY=${KARMAYOGI_API_KEY}
-      - DISABLE_AUTH_VERIFICATION=${DISABLE_AUTH_VERIFICATION:-false}
-	  - MAX_CONCURRENCY=50
-	  - LOG_LEVEL=INFO
-      - WORKER_BATCH_SIZE=50
-      - MAX_ATTEMPTS=3
-      - COURSES_BASE_PATH=/home/aswin/work_local/assessment_generation_1/test_data/new_scoring_data
-      - SCORM_FLAG=false
-      - SSO_URL=https://sso.example.com/auth
-      - SSO_REALM=sunbird-rc
-      - ACCESS_TOKEN_PUBLICKEY_BASEPATH=/home/aswin/work_local/assment_generation_2/keys
-      - CLEANUP_RETENTION_DAYS=7
-      - CLEANUP_SCHEDULE_HOUR=3
-      - CLEANUP_SCHEDULE_MINUTE=0
+		- PYTHONPATH=/app/src
+		- GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
+		- GOOGLE_LOCATION=${GOOGLE_LOCATION}
+		- GENAI_MODEL_NAME=${GENAI_MODEL_NAME}
+		- GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+		- KARMAYOGI_API_KEY=${KARMAYOGI_API_KEY}
+		- DISABLE_AUTH_VERIFICATION=${DISABLE_AUTH_VERIFICATION:-false}
+		- MAX_CONCURRENCY=50
+		- LOG_LEVEL=INFO
+		- WORKER_BATCH_SIZE=50
+		- MAX_ATTEMPTS=3
+		- COURSES_BASE_PATH=/home/aswin/work_local/assessment_generation_1/test_data/new_scoring_data
+		- SCORM_FLAG=false
+		- SSO_URL=https://sso.example.com/auth
+		- SSO_REALM=sunbird-rc
+		- ACCESS_TOKEN_PUBLICKEY_BASEPATH=/home/aswin/work_local/assment_generation_2/keys
+		- CLEANUP_RETENTION_DAYS=7
+		- CLEANUP_SCHEDULE_HOUR=3
+		- CLEANUP_SCHEDULE_MINUTE=0
     command: uvicorn assessment.api:app --host 0.0.0.0 --port 8000
     restart: unless-stopped
     
